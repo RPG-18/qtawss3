@@ -1,3 +1,5 @@
+#include "ObjectTree.h"
+
 #include <algorithm>
 
 #include <QtCore/QFile>
@@ -7,23 +9,22 @@
 #include <QtCore/QtAlgorithms>
 #include <QtCore/QRegularExpression>
 
-#include "BucketTree.h"
 
 namespace Gui
 {
-    BucketTree::BucketTree() :
+    ObjectTree::ObjectTree() :
             m_root(nullptr)
     {
         makeRoot();
     }
 
-    BucketTree::~BucketTree()
+    ObjectTree::~ObjectTree()
     {
         delete m_root;
         m_root = nullptr;
     }
 
-    void BucketTree::makeRoot()
+    void ObjectTree::makeRoot()
     {
         m_root = new TreeNode;
         m_root->m_type = TreeNode::Node;
@@ -31,7 +32,7 @@ namespace Gui
         m_root->m_isRoot = true;
     }
 
-    void BucketTree::build(const ASSS::ObjectInfoList& bucket)
+    void ObjectTree::build(const ASSS::ObjectInfoList& bucket)
     {
         m_bucket = bucket;
         int pos = 0;
@@ -42,14 +43,14 @@ namespace Gui
         }
     }
 
-    void BucketTree::insert(const ASSS::ObjectInfo& object)
+    void ObjectTree::insert(const ASSS::ObjectInfo& object)
     {
         int pos = m_bucket.size();
         m_bucket.push_back(object);
         appendNode(object, pos);
     }
 
-    void BucketTree::appendNode(const ASSS::ObjectInfo& info, int pos)
+    void ObjectTree::appendNode(const ASSS::ObjectInfo& info, int pos)
     {
         const auto key = info.key();
 
@@ -69,7 +70,7 @@ namespace Gui
         }
     }
 
-    bool BucketTree::toDot(const QString& path) const
+    bool ObjectTree::toDot(const QString& path) const
     {
         QFile dotFile(path);
 
@@ -93,7 +94,7 @@ namespace Gui
         return true;
     }
 
-    void BucketTree::toDot(const BucketTree::TreeNode* node,
+    void ObjectTree::toDot(const ObjectTree::TreeNode* node,
             QTextStream& stream) const
     {
         for (auto child : node->m_children)
@@ -115,7 +116,7 @@ namespace Gui
         }
     }
 
-    void BucketTree::add(const QStringList& segments, int pos)
+    void ObjectTree::add(const QStringList& segments, int pos)
     {
         TreeNode* parent = m_root;
         for (auto iter = segments.cbegin(); iter != segments.end(); ++iter)
@@ -174,18 +175,18 @@ namespace Gui
         }
     }
 
-    void BucketTree::addInRoot(int pos)
+    void ObjectTree::addInRoot(int pos)
     {
         new TreeNode(TreeNode::Leaf, m_root, pos);
 
     }
 
-    const BucketTree::TreeNode* BucketTree::root() const
+    const ObjectTree::TreeNode* ObjectTree::root() const
     {
         return m_root;
     }
 
-    const ASSS::ObjectInfo& BucketTree::object(int pos) const
+    const ASSS::ObjectInfo& ObjectTree::object(int pos) const
     {
         Q_ASSERT(pos >= 0);
         Q_ASSERT(pos < m_bucket.size());
@@ -193,14 +194,14 @@ namespace Gui
         return m_bucket[pos];
     }
 
-    void BucketTree::setBucketName(const QString& name)
+    void ObjectTree::setBucketName(const QString& name)
     {
         m_root->m_segment = name;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-    BucketTree::TreeNode::TreeNode() :
+    ObjectTree::TreeNode::TreeNode() :
             m_type(Undef),
             m_parent(nullptr),
             m_bucketPos(-1),
@@ -209,7 +210,7 @@ namespace Gui
     {
     }
 
-    BucketTree::TreeNode::TreeNode(Type type, TreeNode* parent, int pos,
+    ObjectTree::TreeNode::TreeNode(Type type, TreeNode* parent, int pos,
             const QString& segment) :
             m_type(type),
             m_parent(parent),
@@ -223,29 +224,29 @@ namespace Gui
         m_parent->m_children.push_back(this);
     }
 
-    BucketTree::TreeNode::~TreeNode()
+    ObjectTree::TreeNode::~TreeNode()
     {
         qDeleteAll(m_children.begin(), m_children.end());
         m_children.clear();
         m_bucketPos = -1;
     }
 
-    BucketTree::TreeNode::Type BucketTree::TreeNode::type() const
+    ObjectTree::TreeNode::Type ObjectTree::TreeNode::type() const
     {
         return m_type;
     }
 
-    int BucketTree::TreeNode::bucketPos() const
+    int ObjectTree::TreeNode::bucketPos() const
     {
         return m_bucketPos;
     }
 
-    const QString& BucketTree::TreeNode::segment() const
+    const QString& ObjectTree::TreeNode::segment() const
     {
         return m_segment;
     }
 
-    int BucketTree::TreeNode::childrens(Type type) const
+    int ObjectTree::TreeNode::childrens(Type type) const
     {
         if (type != Undef)
         {
@@ -260,7 +261,7 @@ namespace Gui
         return m_children.size();
     }
 
-    const BucketTree::TreeNode* BucketTree::TreeNode::children(int pos) const
+    const ObjectTree::TreeNode* ObjectTree::TreeNode::children(int pos) const
     {
         Q_ASSERT(pos >= 0);
         Q_ASSERT(pos < m_children.size());
@@ -268,13 +269,13 @@ namespace Gui
         return m_children[pos];
     }
 
-    const BucketTree::TreeNode* BucketTree::TreeNode::parent() const
+    const ObjectTree::TreeNode* ObjectTree::TreeNode::parent() const
     {
         return m_parent;
     }
 
-    int BucketTree::TreeNode::childrenPos(
-            const BucketTree::TreeNode* child) const
+    int ObjectTree::TreeNode::childrenPos(
+            const ObjectTree::TreeNode* child) const
     {
         int pos = 0;
         for (const auto item : m_children)
@@ -288,7 +289,7 @@ namespace Gui
         return -1;
     }
 
-    QString BucketTree::TreeNode::path() const
+    QString ObjectTree::TreeNode::path() const
     {
         QStringList out;
 

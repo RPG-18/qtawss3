@@ -11,4 +11,4 @@ target_link_libraries(test_main Qt5::Core)
 
 add_target_to_test(Core Bucket TestBucket.cpp core)
 add_target_to_test(Core BucketRespons TestBucketResponse.cpp core)
-add_target_to_test(Gui BucketTree TestBucketTree.cpp core gui)
+add_target_to_test(Gui ObjectTree TestObjectTree.cpp core gui)

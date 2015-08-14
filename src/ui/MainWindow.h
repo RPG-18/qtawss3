@@ -7,7 +7,7 @@
 #include "Auth.h"
 #include "Error.h"
 #include "Endpoint.h"
-#include "BucketTreeModel.h"
+#include "ObjectTreeModel.h"
 
 namespace Ui
 {
@@ -51,8 +51,8 @@ namespace Gui
     private:
 
         std::shared_ptr<Ui::MainWindow> m_ui;
-        BucketTreePtr m_tree;
-        BucketTreeModel* m_treeModel;
+        ObjectTreePtr m_tree;
+        ObjectTreeModel* m_treeModel;
         ASSS::Auth m_auth;
         ASSS::Endpoint m_endpoint;
         QAction* m_actionOpen;

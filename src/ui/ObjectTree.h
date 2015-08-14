@@ -11,17 +11,17 @@ class QTextStream;
 
 namespace Gui
 {
-    class BucketTree
+    class ObjectTree
     {
     public:
 
         class TreeNode;
 
-        BucketTree();
-        ~BucketTree();
+        ObjectTree();
+        ~ObjectTree();
 
-        BucketTree(const BucketTree&) = delete;
-        BucketTree& operator=(const BucketTree&) = delete;
+        ObjectTree(const ObjectTree&) = delete;
+        ObjectTree& operator=(const ObjectTree&) = delete;
 
         void build(const ASSS::ObjectInfoList& bucket);
         void insert(const ASSS::ObjectInfo& object);
@@ -60,7 +60,7 @@ namespace Gui
         ASSS::ObjectInfoList m_bucket;
     };
 
-    class BucketTree::TreeNode
+    class ObjectTree::TreeNode
     {
         typedef QList<TreeNode*> NodeList;
 
@@ -103,7 +103,7 @@ namespace Gui
 
     private:
 
-        friend class BucketTree;
+        friend class ObjectTree;
 
         Type m_type;
         TreeNode* m_parent;
@@ -114,5 +114,5 @@ namespace Gui
         bool m_isRoot;
     };
 
-    typedef std::shared_ptr<BucketTree> BucketTreePtr;
+    typedef std::shared_ptr<ObjectTree> ObjectTreePtr;
 }

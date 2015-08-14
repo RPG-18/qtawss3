@@ -25,19 +25,19 @@
 
 #include "Bucket.h"
 #include "Settings.h"
-#include "BucketTree.h"
 #include "ErrorDialog.h"
 #include "KeyDelegate.h"
 #include "FolderDialog.h"
 #include "SettingsDialog.h"
 #include "BucketResponse.h"
+#include "ObjectTree.h"
 
 using namespace ASSS;
 namespace Gui
 {
     MainWindow::MainWindow() :
             m_ui(new Ui::MainWindow),
-            m_treeModel(new BucketTreeModel(this)),
+            m_treeModel(new ObjectTreeModel(this)),
             m_actionOpen(new QAction(this))
     {
         m_ui->setupUi(this);
@@ -69,7 +69,7 @@ namespace Gui
 
         response.parse(&ans);
 
-        m_tree = std::make_shared<BucketTree>();
+        m_tree = std::make_shared<ObjectTree>();
         m_tree->build(response.objects());
 
         m_treeModel->setTree(m_tree);
@@ -78,14 +78,14 @@ namespace Gui
 
     void MainWindow::onItemClick(const QModelIndex & index)
     {
-        if (m_treeModel->nodeType(index) == BucketTree::TreeNode::Node)
+        if (m_treeModel->nodeType(index) == ObjectTree::TreeNode::Node)
         {
             m_ui->download->setDisabled(true);
             m_ui->uploadFile->setEnabled(true);
             m_ui->createFolder->setEnabled(true);
             return;
         }
-        else if (m_treeModel->nodeType(index) == BucketTree::TreeNode::Leaf)
+        else if (m_treeModel->nodeType(index) == ObjectTree::TreeNode::Leaf)
         {
             m_ui->download->setEnabled(true);
             m_ui->uploadFile->setDisabled(true);
@@ -193,7 +193,7 @@ namespace Gui
             marker = response.objects().last().key();
         };
 
-        m_tree = std::make_shared<BucketTree>();
+        m_tree = std::make_shared<ObjectTree>();
 
         QFutureWatcher<void> watcher;
         QEventLoop loop;
@@ -201,7 +201,7 @@ namespace Gui
                 &QEventLoop::quit);
 
         watcher.setFuture(
-                QtConcurrent::run(m_tree.get(), &BucketTree::build, buckets));
+                QtConcurrent::run(m_tree.get(), &ObjectTree::build, buckets));
         loop.exec();
         m_tree->setBucketName(m_bucketName);
         m_treeModel->setTree(m_tree);

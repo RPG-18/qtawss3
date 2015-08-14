@@ -4,11 +4,11 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QAbstractItemModel>
 
-#include "BucketTree.h"
+#include "ObjectTree.h"
 
 namespace Gui
 {
-    class BucketTreeModel: public QAbstractItemModel
+    class ObjectTreeModel: public QAbstractItemModel
     {
     Q_OBJECT
 
@@ -19,10 +19,10 @@ namespace Gui
             Name = Qt::UserRole + 1
         };
 
-        BucketTreeModel(QObject* parent = nullptr);
+        ObjectTreeModel(QObject* parent = nullptr);
 
-        void setTree(const BucketTreePtr& tree);
-        BucketTree::TreeNode::Type nodeType(const QModelIndex& index) const;
+        void setTree(const ObjectTreePtr& tree);
+        ObjectTree::TreeNode::Type nodeType(const QModelIndex& index) const;
         int objPosition(const QModelIndex& index) const;
 
         QString path(const QModelIndex& index) const;
@@ -38,6 +38,6 @@ namespace Gui
 
     private:
 
-        BucketTreePtr m_tree;
+        ObjectTreePtr m_tree;
     };
 }

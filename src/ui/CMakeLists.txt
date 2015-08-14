@@ -1,18 +1,18 @@
-set(SRC BucketTree.cpp
+set(SRC ObjectTree.cpp
         Settings.cpp
         MainWindow.cpp
         KeyDelegate.cpp
-        BucketTreeModel.cpp
+        ObjectTreeModel.cpp
         SettingsDialog.cpp
         ErrorDialog.cpp
         FolderDialog.cpp
 )
 
-set(HEADERS BucketTree.h
+set(HEADERS ObjectTree.h
             Settings.h
             MainWindow.h
             KeyDelegate.h
-            BucketTreeModel.h
+            ObjectTreeModel.h
             SettingsDialog.h
             ErrorDialog.h
             FolderDialog.h

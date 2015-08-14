@@ -3,13 +3,13 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 
-#include "BucketTree.h"
+#include "../src/ui/ObjectTree.h"
 #include "BucketResponse.h"
 
 using namespace Gui;
 using namespace ASSS;
 
-TEST(BucketTree, buildAndSaveDot)
+TEST(ObjectTree, buildAndSaveDot)
 {
 #ifdef DATA_DIR
     QString dataDir = QLatin1String(DATA_DIR);
@@ -25,7 +25,7 @@ TEST(BucketTree, buildAndSaveDot)
 
     response.parse(&ans);
 
-    BucketTree tree;
+    ObjectTree tree;
     tree.build(response.objects());
     tree.toDot("test.dot");
 }

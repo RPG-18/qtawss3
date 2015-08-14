@@ -1,19 +1,18 @@
-#include "BucketTreeModel.h"
-
 #include <QtCore/QDebug>
 
 #include <QtWidgets/QStyle>
 #include <QtWidgets/QApplication>
+#include "ObjectTreeModel.h"
 
 using namespace ASSS;
 namespace Gui
 {
-    BucketTreeModel::BucketTreeModel(QObject* parent) :
+    ObjectTreeModel::ObjectTreeModel(QObject* parent) :
             QAbstractItemModel(parent)
     {
     }
 
-    QHash<int, QByteArray> BucketTreeModel::roleNames() const
+    QHash<int, QByteArray> ObjectTreeModel::roleNames() const
     {
         const static QHash<int, QByteArray> roles =
         { { Name, "name" } };
@@ -21,35 +20,35 @@ namespace Gui
         return roles;
     }
 
-    void BucketTreeModel::setTree(const BucketTreePtr& tree)
+    void ObjectTreeModel::setTree(const ObjectTreePtr& tree)
     {
         beginResetModel();
         m_tree = tree;
         endResetModel();
     }
 
-    int BucketTreeModel::columnCount(const QModelIndex & parent) const
+    int ObjectTreeModel::columnCount(const QModelIndex & parent) const
     {
         Q_UNUSED(parent);
         return 1;
     }
 
-    QVariant BucketTreeModel::data(const QModelIndex & index, int role) const
+    QVariant ObjectTreeModel::data(const QModelIndex & index, int role) const
     {
         if (role == Qt::DisplayRole)
         {
             const auto node =
-                    static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                    static_cast<ObjectTree::TreeNode*>(index.internalPointer());
             Q_ASSERT(node != nullptr);
 
             switch (node->type())
             {
-            case BucketTree::TreeNode::Leaf:
+            case ObjectTree::TreeNode::Leaf:
             {
                 ObjectInfo obj = m_tree->object(node->bucketPos());
                 return obj.key();
             }
-            case BucketTree::TreeNode::Node:
+            case ObjectTree::TreeNode::Node:
             {
                 return node->segment();
             }
@@ -60,16 +59,16 @@ namespace Gui
         else if (role == Qt::DecorationRole)
         {
             const auto node =
-                    static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                    static_cast<ObjectTree::TreeNode*>(index.internalPointer());
             Q_ASSERT(node != nullptr);
 
             switch (node->type())
             {
-            case BucketTree::TreeNode::Leaf:
+            case ObjectTree::TreeNode::Leaf:
             {
                 return qApp->style()->standardIcon(QStyle::SP_FileIcon);
             }
-            case BucketTree::TreeNode::Node:
+            case ObjectTree::TreeNode::Node:
             {
                 return qApp->style()->standardIcon(QStyle::SP_DirIcon);
             }
@@ -81,29 +80,29 @@ namespace Gui
         return QVariant();
     }
 
-    QModelIndex BucketTreeModel::index(int row, int column,
+    QModelIndex ObjectTreeModel::index(int row, int column,
             const QModelIndex & parent) const
     {
         if (!parent.isValid())
         {
             //is root
             return createIndex(0, 0,
-                    const_cast<BucketTree::TreeNode*>(m_tree->root()));
+                    const_cast<ObjectTree::TreeNode*>(m_tree->root()));
         }
 
         const auto node =
-                static_cast<BucketTree::TreeNode*>(parent.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(parent.internalPointer());
 
         Q_ASSERT(node != nullptr);
 
         return createIndex(row, column,
-                const_cast<BucketTree::TreeNode*>(node->children(row)));
+                const_cast<ObjectTree::TreeNode*>(node->children(row)));
     }
 
-    QModelIndex BucketTreeModel::parent(const QModelIndex & index) const
+    QModelIndex ObjectTreeModel::parent(const QModelIndex & index) const
     {
         const auto node =
-                static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(index.internalPointer());
 
         if (node == nullptr || node == m_tree->root())
         {
@@ -119,7 +118,7 @@ namespace Gui
         if (parent == m_tree->root())
         {
             return createIndex(0, 0,
-                    const_cast<BucketTree::TreeNode*>(m_tree->root()));
+                    const_cast<ObjectTree::TreeNode*>(m_tree->root()));
         }
 
         const auto granddad = parent->parent();
@@ -134,10 +133,10 @@ namespace Gui
             return QModelIndex();
         }
 
-        return createIndex(pos, 0, const_cast<BucketTree::TreeNode*>(parent));
+        return createIndex(pos, 0, const_cast<ObjectTree::TreeNode*>(parent));
     }
 
-    int BucketTreeModel::rowCount(const QModelIndex & parent) const
+    int ObjectTreeModel::rowCount(const QModelIndex & parent) const
     {
         if(m_tree == nullptr)
         {
@@ -151,7 +150,7 @@ namespace Gui
         }
 
         const auto node =
-                static_cast<BucketTree::TreeNode*>(parent.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(parent.internalPointer());
         if (node != nullptr)
         {
             return node->childrens();
@@ -159,31 +158,31 @@ namespace Gui
         return 0;
     }
 
-    BucketTree::TreeNode::Type BucketTreeModel::nodeType(const QModelIndex& index) const
+    ObjectTree::TreeNode::Type ObjectTreeModel::nodeType(const QModelIndex& index) const
     {
         if(!index.isValid())
         {
-            return BucketTree::TreeNode::Undef;
+            return ObjectTree::TreeNode::Undef;
         }
         const auto node =
-                static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(index.internalPointer());
 
         if (node == nullptr)
         {
-            return BucketTree::TreeNode::Undef;
+            return ObjectTree::TreeNode::Undef;
         }
 
         return node->type();
     }
 
-    int BucketTreeModel::objPosition(const QModelIndex& index) const
+    int ObjectTreeModel::objPosition(const QModelIndex& index) const
     {
         if(!index.isValid())
         {
             return -1;
         }
         const auto node =
-                static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(index.internalPointer());
 
         if (node == nullptr)
         {
@@ -193,7 +192,7 @@ namespace Gui
         return node->bucketPos();
     }
 
-    QVariant BucketTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
+    QVariant ObjectTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
     {
         if(role == Qt::DisplayRole)
         {
@@ -202,14 +201,14 @@ namespace Gui
         return QVariant();
     }
 
-    QString BucketTreeModel::path(const QModelIndex& index) const
+    QString ObjectTreeModel::path(const QModelIndex& index) const
     {
         if(!index.isValid())
         {
             return QString();
         }
         const auto node =
-                static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(index.internalPointer());
 
         if (node == nullptr)
         {
@@ -219,7 +218,7 @@ namespace Gui
         return node->path();
     }
 
-    void BucketTreeModel::insert(const QModelIndex& index, const ASSS::ObjectInfo& info)
+    void ObjectTreeModel::insert(const QModelIndex& index, const ASSS::ObjectInfo& info)
     {
         if(!index.isValid())
         {
@@ -227,7 +226,7 @@ namespace Gui
         }
 
         const auto node =
-                static_cast<BucketTree::TreeNode*>(index.internalPointer());
+                static_cast<ObjectTree::TreeNode*>(index.internalPointer());
 
         int to = 0;
         if(node != nullptr)
