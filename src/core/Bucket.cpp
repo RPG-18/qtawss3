@@ -41,7 +41,7 @@ namespace ASSS
         QList<QString> buckets() const
         {
             QList<QString> bucketLit;
-            QUrl url("https://" + m_endpoint.host());
+            QUrl url("http://" + m_endpoint.host());
 
             QNetworkRequest request(url);
             prepareGet(request);
@@ -71,7 +71,7 @@ namespace ASSS
         const BucketResponse& objects(const QString& nextMarker) const
         {
 
-            QUrl url("https://" + m_endpoint.host());
+            QUrl url("http://" + m_endpoint.host());
             QUrlQuery query;
             if (!nextMarker.isNull())
             {
