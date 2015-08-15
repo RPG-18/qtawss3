@@ -95,7 +95,7 @@ namespace ASSS
 
         void download(const ObjectInfo& obj, const QString& fileName, Bucket::ProgressCallback progress) const
         {
-            const QUrl url("https://" + m_endpoint.host() + "/" + obj.key());
+            const QUrl url("http://" + m_endpoint.host() + "/" + obj.key());
 
             QNetworkRequest request(url);
             prepareGet(request);
