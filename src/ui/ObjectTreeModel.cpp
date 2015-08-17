@@ -45,7 +45,7 @@ namespace Gui
             {
             case ObjectTree::TreeNode::Leaf:
             {
-                ObjectInfo obj = m_tree->object(node->bucketPos());
+                ObjectInfo obj = m_tree->object(node->objectPos());
                 return obj.key();
             }
             case ObjectTree::TreeNode::Node:
@@ -189,7 +189,7 @@ namespace Gui
             return -1;
         }
 
-        return node->bucketPos();
+        return node->objectPos();
     }
 
     QVariant ObjectTreeModel::headerData(int section, Qt::Orientation orientation, int role) const

@@ -57,7 +57,7 @@ namespace Gui
     private:
 
         TreeNode* m_root;
-        ASSS::ObjectInfoList m_bucket;
+        ASSS::ObjectInfoList m_objects;
     };
 
     class ObjectTree::TreeNode
@@ -85,7 +85,7 @@ namespace Gui
         TreeNode(const TreeNode&) = delete;
 
         Type type() const;
-        int bucketPos() const;
+        int objectPos() const;
         const QString& segment() const;
 
         const TreeNode* children(int pos) const;
@@ -95,12 +95,6 @@ namespace Gui
         const TreeNode* parent() const;
         QString path() const;
 
-        /*!
-         * Position the parent the node
-         * @return
-         */
-        int nodePos()const;
-
     private:
 
         friend class ObjectTree;
@@ -108,9 +102,8 @@ namespace Gui
         Type m_type;
         TreeNode* m_parent;
         NodeList m_children;
-        int m_bucketPos;
+        int m_objectPos;
         QString m_segment;
-        int m_nodePos;
         bool m_isRoot;
     };
 

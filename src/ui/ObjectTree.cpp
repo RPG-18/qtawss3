@@ -34,9 +34,9 @@ namespace Gui
 
     void ObjectTree::build(const ASSS::ObjectInfoList& bucket)
     {
-        m_bucket = bucket;
+        m_objects = bucket;
         int pos = 0;
-        for (const auto& object : m_bucket)
+        for (const auto& object : m_objects)
         {
             appendNode(object, pos);
             ++pos;
@@ -45,8 +45,8 @@ namespace Gui
 
     void ObjectTree::insert(const ASSS::ObjectInfo& object)
     {
-        int pos = m_bucket.size();
-        m_bucket.push_back(object);
+        int pos = m_objects.size();
+        m_objects.push_back(object);
         appendNode(object, pos);
     }
 
@@ -103,7 +103,7 @@ namespace Gui
             {
             case TreeNode::Leaf:
                 stream << "    \"" << node->m_segment << "\"--\""
-                       << m_bucket[child->m_bucketPos].key() << "\";" << endl;
+                       << m_objects[child->m_objectPos].key() << "\";" << endl;
                 break;
             case TreeNode::Node:
                 stream << "    \"" << node->m_segment << "\"--\""
@@ -189,9 +189,9 @@ namespace Gui
     const ASSS::ObjectInfo& ObjectTree::object(int pos) const
     {
         Q_ASSERT(pos >= 0);
-        Q_ASSERT(pos < m_bucket.size());
+        Q_ASSERT(pos < m_objects.size());
 
-        return m_bucket[pos];
+        return m_objects[pos];
     }
 
     void ObjectTree::setBucketName(const QString& name)
@@ -204,8 +204,7 @@ namespace Gui
     ObjectTree::TreeNode::TreeNode() :
             m_type(Undef),
             m_parent(nullptr),
-            m_bucketPos(-1),
-            m_nodePos(-1),
+            m_objectPos(-1),
             m_isRoot(false)
     {
     }
@@ -214,13 +213,11 @@ namespace Gui
             const QString& segment) :
             m_type(type),
             m_parent(parent),
-            m_bucketPos(pos),
+            m_objectPos(pos),
             m_segment(segment),
-            m_nodePos(-1),
             m_isRoot(false)
 
     {
-        m_nodePos = m_parent->m_children.count();
         m_parent->m_children.push_back(this);
     }
 
@@ -228,7 +225,7 @@ namespace Gui
     {
         qDeleteAll(m_children.begin(), m_children.end());
         m_children.clear();
-        m_bucketPos = -1;
+        m_objectPos = -1;
     }
 
     ObjectTree::TreeNode::Type ObjectTree::TreeNode::type() const
@@ -236,9 +233,9 @@ namespace Gui
         return m_type;
     }
 
-    int ObjectTree::TreeNode::bucketPos() const
+    int ObjectTree::TreeNode::objectPos() const
     {
-        return m_bucketPos;
+        return m_objectPos;
     }
 
     const QString& ObjectTree::TreeNode::segment() const

@@ -81,7 +81,6 @@ namespace ASSS
             url.setQuery(query);
 
             QNetworkRequest request(url);
-
             prepareGet(request);
 
             auto replay = m_networkManager->get(request);
