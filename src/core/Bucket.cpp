@@ -216,7 +216,7 @@ namespace ASSS
                     QString("%1.s3.amazonaws.com").arg(m_bucketName).toUtf8());
 
             Signature signature(m_auth, m_endpoint.region());
-            const auto dataSign = signature.sign(QByteArray());
+            const auto dataSign = signature.hash(QByteArray());
             request.setRawHeader("x-amz-content-sha256", dataSign);
 
             signature.sign(request, QNetworkAccessManager::GetOperation,
@@ -234,7 +234,7 @@ namespace ASSS
                     QString("%1.s3.amazonaws.com").arg(m_bucketName).toUtf8());
 
             Signature signature(m_auth, m_endpoint.region());
-            const auto dataSign = signature.sign(device);
+            const auto dataSign = signature.hash(device);
             request.setRawHeader("x-amz-content-sha256", dataSign);
             request.setRawHeader("x-amz-acl", "bucket-owner-full-control");
 

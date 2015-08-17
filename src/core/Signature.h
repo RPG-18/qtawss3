@@ -36,8 +36,8 @@ namespace ASSS
                 QNetworkAccessManager::Operation operation,
                 const QDateTime& dateTime, const QByteArray& dataSign);
 
-        QByteArray sign(const QByteArray& data) const;
-        QByteArray sign(QIODevice& device) const;
+        QByteArray hash(const QByteArray& data) const;
+        QByteArray hash(QIODevice& device) const;
 
         QString canonicalPath(const QUrl& url) const;
 

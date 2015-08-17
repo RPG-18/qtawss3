@@ -132,12 +132,12 @@ namespace ASSS
         return canRequest;
     }
 
-    QByteArray Signature::sign(const QByteArray& data) const
+    QByteArray Signature::hash(const QByteArray& data) const
     {
         return QCryptographicHash::hash(data, HASH_ALGORITHM).toHex();
     }
 
-    QByteArray Signature::sign(QIODevice& device) const
+    QByteArray Signature::hash(QIODevice& device) const
     {
         device.seek(0);
         QCryptographicHash hash(HASH_ALGORITHM);
